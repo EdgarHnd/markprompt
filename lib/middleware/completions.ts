@@ -9,21 +9,23 @@ import {
 } from './common';
 
 export default async function CompletionsMiddleware(req: NextRequest) {
-  if (!req.ip) {
-    return new Response('Forbidden', { status: 403 });
-  }
+  if (process.env.NODE_ENV === 'production') {
+    if (!req.ip) {
+      return new Response('Forbidden', { status: 403 });
+    }
 
-  // Apply rate limiting here already based on IP. After that, apply rate
-  // limiting on requester origin and token.
+    // Apply rate limiting here already based on IP. After that, apply rate
+    // limiting on requester origin and token.
 
-  const rateLimitIPResult = await checkCompletionsRateLimits({
-    value: req.ip,
-    type: 'ip',
-  });
+    const rateLimitIPResult = await checkCompletionsRateLimits({
+      value: req.ip,
+      type: 'ip',
+    });
 
-  if (!rateLimitIPResult.result.success) {
-    console.error(`[TRAIN] [RATE-LIMIT] IP ${req.ip}`);
-    return new Response('Too many requests', { status: 429 });
+    if (!rateLimitIPResult.result.success) {
+      console.error(`[TRAIN] [RATE-LIMIT] IP ${req.ip}`);
+      return new Response('Too many requests', { status: 429 });
+    }
   }
 
   const path = req.nextUrl.pathname;

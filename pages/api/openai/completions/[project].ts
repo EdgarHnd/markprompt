@@ -29,7 +29,7 @@ export const config = {
 
 const getPayload = (prompt: string, model: OpenAIModel) => {
   const payload = {
-    model,
+    model: model.value,
     temperature: 0.1,
     top_p: 1,
     frequency_penalty: 0,

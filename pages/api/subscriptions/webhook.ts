@@ -48,10 +48,6 @@ export default async function handler(
   const buf = await buffer(req);
   const sig = req.headers['stripe-signature'];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-  console.log(
-    'Webhook',
-    truncateMiddle(process.env.STRIPE_WEBHOOK_SECRET!, 8, 4),
-  );
   let event: Stripe.Event;
 
   try {
